@@ -14,16 +14,16 @@ class MoveAction: Action {
   }
 
   override func valid() -> Bool {
+    if (self.fromCoords.row != self.toCoords.row && self.fromCoords.col != self.toCoords.col) ||
+       (!Validator.inBounds(self.fromCoords.row) || !Validator.inBounds(self.fromCoords.col)) ||
+       (!Validator.inBounds(self.toCoords.row) || !Validator.inBounds(self.toCoords.col)) {
+        print("Outside of board or not on same row or column")
+        return false
+    }
+
     if self.board.boardMatrix[self.fromCoords.row][self.fromCoords.col] != self.playerPiece {
       print("Starting piece is not own by the player or there is no piece there")
       return false
-    }
-
-    if (self.fromCoords.row != self.toCoords.row && self.fromCoords.col != self.toCoords.col) ||
-       (self.fromCoords.row < 0 || self.fromCoords.row > 6 || self.fromCoords.col < 0 || self.fromCoords.col > 6) ||
-       (self.toCoords.row < 0 || self.toCoords.row > 6 || self.toCoords.col < 0 || self.toCoords.col > 6) {
-        print("Outside of board or not on same row or column")
-        return false
     }
 
     if self.fromCoords.row == self.toCoords.row {

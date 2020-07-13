@@ -23,6 +23,7 @@ class PlaceAction: Action {
       self.board.setPiece(self.move, Constants.ColorConstants.blackColorPiece)
     }
     self.player.piecesOnBoard.append(self.move)
+
     return true
   }
 }

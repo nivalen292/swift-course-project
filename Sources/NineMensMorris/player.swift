@@ -13,8 +13,12 @@ class Player {
     self.piecesOnBoard = []
   }
 
+  func totalPieceCount() -> Int {
+    return self.pieceCountInHand + self.pieceCountOnBoard
+  }
+
   func hasLost() -> Bool {
-    return self.pieceCountInHand + self.pieceCountOnBoard <= 2
+    return self.totalPieceCount() <= 2
   }
 
   func playTurn() -> Bool {
@@ -28,7 +32,7 @@ class Player {
     if let action = ActionFactory.getActionFactory().getAction(board: self.board, move: position, player: self) {
       return action.play()
     }
-    
+
     return false
   }
 }

@@ -1,0 +1,2 @@
+class RemoveAction: Action {
+}

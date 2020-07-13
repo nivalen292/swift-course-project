@@ -43,15 +43,83 @@ class Board {
     }
   }
 
-  func validPosition(_ position: String, _ action: String) -> Bool {
-    let coords = Board.parseCoordinates(position)
-    if (action == "place" && self.boardMatrix[coords.row][coords.col] == ".") {
-      return true
+  func isPartOfMill(_ position: String) -> Bool {
+    if !Board.validMove(position) {
+      return false
     }
-    return false
+
+    let coords = Board.parseCoordinates(position)
+    let piece = self.boardMatrix[coords.row][coords.col]
+
+    if piece != Constants.ColorConstants.whiteColorPiece || piece != Constants.ColorConstants.blackColorPiece {
+      return false
+    }
+
+    var formsMillUp = true
+    var formsMillDown = true
+    var formsMillLeft = true
+    var formsMillRight = true
+
+    // check up
+    var start = coords.row
+    while start > coords.row - 2 {
+      if !Validator.inBounds(start) {
+        formsMillUp = false
+        break
+      }
+      if self.boardMatrix[start][coords.col] != piece {
+        formsMillUp = false
+        break
+      }
+      start -= 1
+    }
+
+    // check down
+    start = coords.row
+    while start < coords.row + 2 {
+      if !Validator.inBounds(start) {
+        formsMillDown = false
+        break
+      }
+      if self.boardMatrix[start][coords.col] != piece {
+        formsMillDown = false
+        break
+      }
+      start += 1
+    }
+
+    // check left
+    start = coords.col
+    while start > coords.col - 2 {
+      if !Validator.inBounds(start) {
+        formsMillLeft = false
+        break
+      }
+      if self.boardMatrix[coords.row][start] != piece {
+        formsMillLeft = false
+        break
+      }
+      start -= 1
+    }
+
+    // check right
+    start = coords.col
+    while start < coords.col + 2 {
+      if !Validator.inBounds(start) {
+        formsMillRight = false
+        break
+      }
+      if self.boardMatrix[coords.row][start] != piece {
+        formsMillRight = false
+        break
+      }
+      start += 1
+    }
+
+    return formsMillUp || formsMillDown || formsMillLeft || formsMillRight
   }
 
-  class func validMove(_ move: String) -> Bool {
+  static func validMove(_ move: String) -> Bool {
     let regex = "^([A-G][1-7]|[A-G][1-7][A-G][1-7])$"
     if (move.range(of:regex, options:.regularExpression) != nil) {
       return true
