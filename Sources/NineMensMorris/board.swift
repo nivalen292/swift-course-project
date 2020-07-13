@@ -1,3 +1,5 @@
+import Foundation
+
 class Board {
   var boardMatrix: [[String]]
 
@@ -9,21 +11,21 @@ class Board {
     let verticalPositions = ["A2", "A3", "A6", "A7", "G2", "G3", "G6", "G7", "B3", "B5", "F3", "F5"]
 
     for openPosition in horizontalPositions {
-      let position = parseCoordinates(openPosition)
+      let position = Board.parseCoordinates(openPosition)
       self.boardMatrix[position.row][position.col] = "-"
     }
     for openPosition in verticalPositions {
-      let position = parseCoordinates(openPosition)
+      let position = Board.parseCoordinates(openPosition)
       self.boardMatrix[position.row][position.col] = "|"
     }
     for openPosition in emptyPositions {
-      let position = parseCoordinates(openPosition)
+      let position = Board.parseCoordinates(openPosition)
       self.boardMatrix[position.row][position.col] = "."
     }
   }
 
   func setPiece(_ coordinateString: String, _ piece: String) {
-    var coords = parseCoordinates(coordinateString)
+    let coords = Board.parseCoordinates(coordinateString)
     self.boardMatrix[coords.row][coords.col] = piece
   }
 
@@ -37,14 +39,20 @@ class Board {
   }
 
   func validPosition(_ position: String, _ action: String) -> Bool {
-    let coords = parseCoordinates(position)
+    let coords = Board.parseCoordinates(position)
     if (action == "place" && self.boardMatrix[coords.row][coords.col] == ".") {
       return true
     }
     return false
   }
 
-  private func parseCoordinates(_ coordinateString: String) -> (row: Int, col: Int) {
+  class func validMove(_ move: String) -> Bool {
+    let regex = "^([A-G][1-7]|[A-G][1-7]{2})$"
+
+    return move.range(of:regex, options:.regularExpression) != nil
+  }
+
+  static func parseCoordinates(_ coordinateString: String) -> (row: Int, col: Int) {
     let row = Int(coordinateString.suffix(1))! - 1
     let col = Int(UnicodeScalar(String(coordinateString.prefix(1)))!.value - 65)
     

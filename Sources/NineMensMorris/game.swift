@@ -11,9 +11,9 @@ class Game {
 
   func playTurn() {
     board.printBoard()
-    player1.playTurn(action: "place")
+    player1.playTurn()
     board.printBoard()
-    player2.playTurn(action: "place")
+    player2.playTurn()
     board.printBoard()
   }
 
