@@ -10,14 +10,24 @@ class Game {
   }
 
   func playTurn() {
+    var validMove: Bool
     board.printBoard()
-    player1.playTurn()
+
+    validMove = player1.playTurn()
+    while !validMove {
+      validMove = player1.playTurn()
+    }
     board.printBoard()
-    player2.playTurn()
-    board.printBoard()
+
+    validMove = player2.playTurn()
+    while !validMove {
+      validMove = player2.playTurn()
+    }
   }
 
   func run() {
-    self.playTurn()
+    repeat {
+      self.playTurn()
+    } while !self.player1.hasLost() && !self.player2.hasLost()
   }
 }

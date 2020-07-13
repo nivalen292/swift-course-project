@@ -1,8 +1,4 @@
 class PlaceAction: Action {
-  override init(board: Board, move: String, player: Player) {
-    super.init(board: board, move: move, player: player)
-  }
-
   override func valid() -> Bool {
     let coords = Board.parseCoordinates(self.move)
     if self.board.boardMatrix[coords.row][coords.col] == "." {
@@ -22,9 +18,9 @@ class PlaceAction: Action {
     self.player.pieceCountInHand -= 1
     self.player.pieceCountOnBoard += 1
     if player.color == "white" {
-      self.board.setPiece(self.move, "○")
+      self.board.setPiece(self.move, Constants.ColorConstants.whiteColorPiece)
     } else {
-      self.board.setPiece(self.move, "●")
+      self.board.setPiece(self.move, Constants.ColorConstants.blackColorPiece)
     }
     self.player.piecesOnBoard.append(self.move)
     return true

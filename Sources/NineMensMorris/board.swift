@@ -29,6 +29,11 @@ class Board {
     self.boardMatrix[coords.row][coords.col] = piece
   }
 
+  func removePiece(_ coordinateString: String) {
+    let coords = Board.parseCoordinates(coordinateString)
+    self.boardMatrix[coords.row][coords.col] = "."
+  }
+
   func printBoard() {
     for row in boardMatrix {
       for col in row {
@@ -47,9 +52,13 @@ class Board {
   }
 
   class func validMove(_ move: String) -> Bool {
-    let regex = "^([A-G][1-7]|[A-G][1-7]{2})$"
-
-    return move.range(of:regex, options:.regularExpression) != nil
+    let regex = "^([A-G][1-7]|[A-G][1-7][A-G][1-7])$"
+    if (move.range(of:regex, options:.regularExpression) != nil) {
+      return true
+    } else {
+      print("Wrong notation.")
+      return false
+    }
   }
 
   static func parseCoordinates(_ coordinateString: String) -> (row: Int, col: Int) {
