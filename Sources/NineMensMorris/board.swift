@@ -34,13 +34,66 @@ class Board {
     self.boardMatrix[coords.row][coords.col] = "."
   }
 
+  func getPieceAt(_ coordinateString: String) -> String {
+    let coords = Board.parseCoordinates(coordinateString)
+    return self.boardMatrix[coords.row][coords.col]
+  }
+
   func printBoard() {
-    for row in boardMatrix {
+    print("  A B C D E F G")
+    for (index, row) in boardMatrix.enumerated() {
+      print(index + 1, terminator: " ")
       for col in row {
         print(col, terminator: " ")
       }
       print("")
     }
+  }
+
+  func isMovablePiece(_ position: String) -> Bool {
+    if !Board.validMove(position) {
+      return false
+    }
+
+    let coords = Board.parseCoordinates(position)
+
+    // check up
+    var start = coords.row
+    while Validator.inBounds(start) {
+      if self.boardMatrix[start][coords.col] == "." {
+        return true
+      }
+      start -= 1
+    }
+
+    // check down
+    start = coords.row
+    while Validator.inBounds(start) {
+      if self.boardMatrix[start][coords.col] == "." {
+        return true
+      }
+      start += 1
+    }
+
+    // check left
+    start = coords.col
+    while Validator.inBounds(start) {
+      if self.boardMatrix[coords.row][start] == "." {
+        return true
+      }
+      start -= 1
+    }
+
+    // check right
+    start = coords.col
+    while Validator.inBounds(start) {
+      if self.boardMatrix[coords.row][start] == "." {
+        return true
+      }
+      start += 1
+    }
+
+    return false
   }
 
   func isPartOfMill(_ position: String) -> Bool {
@@ -51,72 +104,52 @@ class Board {
     let coords = Board.parseCoordinates(position)
     let piece = self.boardMatrix[coords.row][coords.col]
 
-    if piece != Constants.ColorConstants.whiteColorPiece || piece != Constants.ColorConstants.blackColorPiece {
+    if piece != Constants.ColorConstants.whiteColorPiece && piece != Constants.ColorConstants.blackColorPiece {
       return false
     }
 
-    var formsMillUp = true
-    var formsMillDown = true
-    var formsMillLeft = true
-    var formsMillRight = true
+    var formsMillUp = 0
+    var formsMillDown = 0
+    var formsMillLeft = 0
+    var formsMillRight = 0
 
     // check up
     var start = coords.row
-    while start > coords.row - 2 {
-      if !Validator.inBounds(start) {
-        formsMillUp = false
-        break
-      }
-      if self.boardMatrix[start][coords.col] != piece {
-        formsMillUp = false
-        break
+    while Validator.inBounds(start) {
+      if self.boardMatrix[start][coords.col] == piece {
+        formsMillUp += 1
       }
       start -= 1
     }
 
     // check down
     start = coords.row
-    while start < coords.row + 2 {
-      if !Validator.inBounds(start) {
-        formsMillDown = false
-        break
-      }
-      if self.boardMatrix[start][coords.col] != piece {
-        formsMillDown = false
-        break
+    while Validator.inBounds(start) {
+      if self.boardMatrix[start][coords.col] == piece {
+        formsMillDown += 1
       }
       start += 1
     }
 
     // check left
     start = coords.col
-    while start > coords.col - 2 {
-      if !Validator.inBounds(start) {
-        formsMillLeft = false
-        break
-      }
-      if self.boardMatrix[coords.row][start] != piece {
-        formsMillLeft = false
-        break
+    while Validator.inBounds(start) {
+      if self.boardMatrix[coords.row][start] == piece {
+        formsMillLeft += 1
       }
       start -= 1
     }
 
     // check right
     start = coords.col
-    while start < coords.col + 2 {
-      if !Validator.inBounds(start) {
-        formsMillRight = false
-        break
-      }
-      if self.boardMatrix[coords.row][start] != piece {
-        formsMillRight = false
-        break
+    while Validator.inBounds(start) {
+      if self.boardMatrix[coords.row][start] == piece {
+        formsMillRight += 1
       }
       start += 1
     }
 
-    return formsMillUp || formsMillDown || formsMillLeft || formsMillRight
+    return formsMillUp == 3 || formsMillDown == 3 || formsMillLeft == 3 || formsMillRight == 3
   }
 
   static func validMove(_ move: String) -> Bool {

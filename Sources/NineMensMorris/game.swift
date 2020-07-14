@@ -7,6 +7,9 @@ class Game {
     self.board = Board()
     self.player1 = Player(color: "white", board: board)
     self.player2 = Player(color: "black", board: board)
+    
+    self.player1.oponent = player2
+    self.player2.oponent = player1
   }
 
   func playTurn() {
@@ -29,5 +32,8 @@ class Game {
     repeat {
       self.playTurn()
     } while !self.player1.hasLost() && !self.player2.hasLost()
+
+    let winningColor = self.player1.hasLost() ? self.player2.color : self.player1.color
+    print("\(winningColor) player won.")
   }
 }

@@ -4,6 +4,7 @@ class Player {
   var pieceCountOnBoard: Int
   var board: Board
   var piecesOnBoard: [String]
+  var oponent: Player? = nil
 
   init(color: String, board: Board) {
     self.color = color
@@ -18,7 +19,40 @@ class Player {
   }
 
   func hasLost() -> Bool {
-    return self.totalPieceCount() <= 2
+    return self.totalPieceCount() <= 2 || self.allPiecesTrapped()
+  }
+
+  func piece() -> String {
+    return self.color == "white" ? Constants.ColorConstants.whiteColorPiece : Constants.ColorConstants.blackColorPiece
+  }
+
+  func allPiecesTrapped() -> Bool {
+    if self.pieceCountInHand == 0 {
+      for pieceCoords in self.piecesOnBoard {
+        if self.board.isMovablePiece(pieceCoords) {
+          return false
+        }
+      }
+      return true
+    }
+    return false
+  }
+
+  func forfeitPiece(_ coordinateString: String) -> Bool {
+    if self.pieceCountOnBoard == 0 {
+      return true
+    }
+    if !self.piecesOnBoard.contains(coordinateString) {
+      return false
+    }
+    if self.pieceCountOnBoard > 3 && self.board.isPartOfMill(coordinateString) {
+      return false
+    }
+
+    self.board.removePiece(coordinateString)
+    self.piecesOnBoard.remove(at: self.piecesOnBoard.firstIndex(of: coordinateString)!)
+    self.pieceCountOnBoard -= 1
+    return true
   }
 
   func playTurn() -> Bool {
@@ -30,7 +64,21 @@ class Player {
     } while !Board.validMove(position)
     
     if let action = ActionFactory.getActionFactory().getAction(board: self.board, move: position, player: self) {
-      return action.play()
+      if !action.play() {
+        return false
+      }
+      // action was successful
+      if self.board.isPartOfMill(position) {
+        self.board.printBoard()
+        // can remove an oponent piece
+        var removePiecePosition: String
+        repeat {
+          print("You formed a mill. Enter the coordinates of an oponent piece to remove: ")
+          removePiecePosition = readLine()!
+        } while !Board.validMove(removePiecePosition) //self.board.getPieceAt(removePiecePosition) != self.oponent!.piece()
+        self.oponent!.forfeitPiece(removePiecePosition)
+      }
+      return true
     }
 
     return false
