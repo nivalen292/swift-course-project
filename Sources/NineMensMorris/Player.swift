@@ -67,7 +67,7 @@ class Player {
       if !action.play() {
         return false
       }
-      // action was successful
+      position = position.count == 2 ? position : String(position.suffix(2))
       if self.board.isPartOfMill(position) {
         self.board.printBoard()
         // can remove an oponent piece
@@ -75,7 +75,7 @@ class Player {
         repeat {
           print("You formed a mill. Enter the coordinates of an oponent piece to remove: ")
           removePiecePosition = readLine()!
-        } while !Board.validMove(removePiecePosition) //self.board.getPieceAt(removePiecePosition) != self.oponent!.piece()
+        } while !Board.validMove(removePiecePosition)
         self.oponent!.forfeitPiece(removePiecePosition)
       }
       return true
